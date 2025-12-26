@@ -13,22 +13,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "bucket")
+@Table(name = "storage_object",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"bucket_id", "object_key"}))
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Bucket {
+public class StorageObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 255)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bucket_id", nullable = false)
+    private Bucket bucket;
 
-    @OneToMany(mappedBy = "bucket", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<StorageObject> objects = new ArrayList<>();
+    @Column(name = "object_key", nullable = false, length = 1024)
+    private String objectKey;
+
+    @OneToOne
+    @JoinColumn(name = "current_version_id")
+    private ObjectVersion currentVersion;
+
+    @OneToMany(mappedBy = "storageObject", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ObjectVersion> versions = new ArrayList<>();
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
