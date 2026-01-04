@@ -1,5 +1,8 @@
 package com.rajat.minis3.config;
 
+import lombok.Getter;
+
+@Getter
 public enum OperationResult {
 
     // Bucket Related Operation Results
@@ -21,7 +24,4 @@ public enum OperationResult {
         this.operationResult = roomType;
     }
 
-    public String getOperationResult() {
-        return this.operationResult;
-    }
 }
