@@ -37,4 +37,8 @@ public class Bucket {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    public Bucket(String bucketName) {
+        this.name = bucketName;
+    }
 }
