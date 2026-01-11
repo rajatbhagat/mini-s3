@@ -5,6 +5,7 @@ import com.rajat.minis3.model.Bucket;
 import com.rajat.minis3.service.BucketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -21,7 +22,7 @@ public class BucketController {
             @RequestParam String bucketName
     ) {
         if (bucketName.isBlank()) {
-            return "Please provide a valid bucket name.";
+            ResponseEntity.badRequest().body("Please provide a valid bucket name.");
         }
         Optional<Bucket> bucket = bucketService.getBucketDetails(bucketName);
         if (bucket.isPresent()) {
@@ -35,7 +36,7 @@ public class BucketController {
             @RequestParam String bucketName
     ) {
         if (bucketName.isBlank()) {
-            return "Please provide a valid bucket name.";
+            ResponseEntity.badRequest().body("Please provide a valid bucket name.");
         }
         Optional<Bucket> bucket = bucketService.createBucketIfNotExists(bucketName);
         if(bucket.isEmpty()) {
@@ -50,7 +51,7 @@ public class BucketController {
             @RequestParam String bucketName
     ) {
         if (bucketName.isBlank()) {
-            return "Please provide a valid bucket name.";
+            ResponseEntity.badRequest().body("Please provide a valid bucket name.");
         }
         return bucketService.dropBucketIfExists(bucketName).getOperationResult();
     }
