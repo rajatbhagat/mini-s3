@@ -22,10 +22,4 @@ public interface BucketRepository extends JpaRepository<Bucket, Long> {
      * @return true if bucket exists, false otherwise
      */
     boolean existsByName(String name);
-
-    /**
-     * Creates a new Bucket with the provided bucket name
-     * @param bucket Bucket obejct
-     */
-    Bucket save(Bucket bucket);
 }

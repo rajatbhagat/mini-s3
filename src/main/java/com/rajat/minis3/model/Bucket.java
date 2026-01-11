@@ -1,6 +1,10 @@
 package com.rajat.minis3.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "bucket")
@@ -21,14 +24,10 @@ import java.util.List;
 public class Bucket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String uuid;
 
     @Column(nullable = false, unique = true, length = 255)
     private String name;
-
-    @OneToMany(mappedBy = "bucket", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<StorageObject> objects = new ArrayList<>();
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -39,6 +38,7 @@ public class Bucket {
     private LocalDateTime updatedAt;
 
     public Bucket(String bucketName) {
+        this.uuid = UUID.randomUUID().toString();
         this.name = bucketName;
     }
 }
