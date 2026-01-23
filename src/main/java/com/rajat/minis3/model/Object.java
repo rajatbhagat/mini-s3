@@ -1,6 +1,15 @@
 package com.rajat.minis3.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +18,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "storage_object",
@@ -19,25 +26,27 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class StorageObject {
+public class Object {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String objectUuid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bucket_id", nullable = false)
     private Bucket bucket;
 
-    @Column(name = "object_key", nullable = false, length = 1024)
+    @Column(name = "key", nullable = false, length = 1024)
     private String objectKey;
 
-    @OneToOne
-    @JoinColumn(name = "current_version_id")
-    private ObjectVersion currentVersion;
+    @Lob
+    @Column(name = "content", nullable = false)
+    private String objectContent;
 
-    @OneToMany(mappedBy = "storageObject", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ObjectVersion> versions = new ArrayList<>();
+    @Column(nullable = false)
+    private Long size;
+
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

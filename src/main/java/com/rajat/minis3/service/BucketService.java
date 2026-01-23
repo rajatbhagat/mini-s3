@@ -1,6 +1,5 @@
 package com.rajat.minis3.service;
 
-import com.rajat.minis3.config.OperationResult;
 import com.rajat.minis3.dao.BucketDao;
 import com.rajat.minis3.model.Bucket;
 import org.apache.logging.log4j.LogManager;
@@ -8,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +17,11 @@ public class BucketService {
 
     @Autowired
     private BucketDao bucketDao;
+
+    public List<Bucket> listBuckets() {
+        return bucketDao.listBuckets();
+    }
+
 
     public Optional<Bucket> getBucketDetails(String bucketName) {
         if (bucketDao.getBucketDetails(bucketName).isEmpty()) {
@@ -33,8 +38,8 @@ public class BucketService {
     }
 
     public Optional<Bucket> createBucketIfNotExists(String bucketName) {
-        Optional<Bucket> newBucket = Optional.empty();
-        if (bucketDao.getBucketDetails(bucketName).isEmpty()) {
+        Optional<Bucket> newBucket = bucketDao.getBucketDetails(bucketName);
+        if (bucketDao.getBucketDetails(bucketName).isPresent()) {
             logging.info("Bucket with {} already exists. Not re-creating it", bucketName);
             return newBucket;
         }
@@ -49,17 +54,17 @@ public class BucketService {
         }
     }
 
-    public OperationResult dropBucketIfExists(String bucketName) {
+    public boolean dropBucketIfExists(String bucketName) {
         if (bucketDao.getBucketDetails(bucketName).isEmpty()) {
             logging.info("Bucket {} does not exist", bucketName);
-            return OperationResult.BUCKET_DOES_NOT_EXIST;
+            return false;
         }
         try {
             logging.info("Deleting bucket {}", bucketName);
             return bucketDao.dropBucket(bucketName);
         } catch (Exception e) {
             logging.error("Exception deleting bucket {} : {}", bucketName, e.getMessage());
-            return OperationResult.ERROR;
+            return false;
         }
     }
 }
