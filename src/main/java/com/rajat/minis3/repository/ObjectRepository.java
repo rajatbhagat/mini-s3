@@ -33,4 +33,6 @@ public interface ObjectRepository extends JpaRepository<Object, Long> {
      * @return true if exists, false otherwise
      */
     boolean existsByBucketAndObjectKey(Bucket bucket, String objectKey);
+
+    String findObjectContentByBucketAndObjectKey(Bucket bucket, String objectKey);
 }
