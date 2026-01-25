@@ -1,13 +1,14 @@
 package com.rajat.minis3.repository;
 
-import com.rajat.minis3.model.Bucket;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.rajat.minis3.model.Bucket;
 
 @Repository
-public interface BucketRepository extends JpaRepository<Bucket, Long> {
+public interface BucketRepository extends JpaRepository<Bucket, String> {
 
     /**
      * Find a bucket by its name

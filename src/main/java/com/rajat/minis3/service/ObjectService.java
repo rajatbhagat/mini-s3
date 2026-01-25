@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +26,20 @@ public class ObjectService {
 
     @Autowired
     private BucketRepository bucketRepository;
+
+    public Object getObject(String bucketName, String objectKey) {
+        Optional<Bucket> bucketOpt = bucketRepository.findByName(bucketName);
+        if (bucketOpt.isEmpty()) {
+            logging.info("Bucket with name {} does not exist", bucketName);
+            return null;
+        }
+        try {
+            return objectRepository.findByBucketAndObjectKey(bucketOpt.get(), objectKey).get();
+        } catch (Exception e) {
+            logging.error("Error retrieving object: {}", e.getMessage());
+            return null;
+        }
+    }
 
     @Transactional
     public String getObjectContent(String bucketName, String objectKey) {
@@ -39,6 +54,15 @@ public class ObjectService {
             logging.error("Error retrieving object: {}", e.getMessage());
             return null;
         }
+    }
+
+    public List<Object> listObjects(String bucketName) {
+        Optional<Bucket> bucketOpt = bucketRepository.findByName(bucketName);
+        if (bucketOpt.isEmpty()) {
+            logging.info("Bucket with name {} does not exist", bucketName);
+            return null;
+        }
+        return objectRepository.findByBucket(bucketOpt.get());
     }
 
     public Object uploadObject(String bucketName, String objectKey, MultipartFile file) throws MiniS3Exception {

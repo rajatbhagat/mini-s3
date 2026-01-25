@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,11 +28,18 @@ public class ObjectController {
     @Autowired
     private ObjectService objectService;
 
-    @GetMapping(value = "/")
-    public ResponseEntity<?> getObjectDetails(
-            @RequestParam String bucketName,
-            @RequestParam String objectKey
-    ) {
+    @GetMapping(value = "/list")
+    public List<Object> listObjectDetails(@RequestParam String bucketName) {
+        return objectService.listObjects(bucketName);
+    }
+
+    @GetMapping(value = "/details")
+    public Object getObjectDetails(@RequestParam String bucketName, @RequestParam String objectKey) {
+        return objectService.getObject(bucketName, objectKey);
+    }
+
+    @GetMapping(value = "/download")
+    public ResponseEntity<?> downloadObject(@RequestParam String bucketName, @RequestParam String objectKey) {
         if (bucketName.isBlank() || objectKey.isBlank()) {
             return ResponseEntity.badRequest().body("Please provide valid bucket name and object key.");
         }
